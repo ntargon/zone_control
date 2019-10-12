@@ -1,5 +1,8 @@
 // modules
 const Unit = require('./Unit.js');
+const Zone = require('./Zone.js');
+const SharedSettings = require('../public/js/SharedSettings.js');
+
 
 // ワールドクラス
 
@@ -9,6 +12,17 @@ module.exports = class World {
 	constructor(io){
 		this.io = io; // socketIO
 		this.setUnit = new Set(); // unit list
+		this.setZone = new Set(); // zone list
+		this.initZone();
+	}
+
+	initZone(){
+		for(let row = 0; row < SharedSettings.ZONE_ROW_NUM; row++){
+			for(let col = 0; col < SharedSettings.ZONE_COL_NUM; col++){
+				const zone = new Zone(row, col);
+				this.setZone.add( zone );
+			}
+		}
 	}
 
 	// 更新処理

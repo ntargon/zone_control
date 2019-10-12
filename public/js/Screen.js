@@ -8,6 +8,7 @@ class Screen{
 		this.assets = new Assets();
 		this.iProcessingTimeNanoSec = 0;
 		this.aUnit = null;
+		this.aZone = null;
 
 		// キャンバスの初期化
 		this.canvas.width = SharedSettings.FIELD_WIDTH;
@@ -31,8 +32,9 @@ class Screen{
    			this.socket.emit('enter-the-game');
    		});
 
-   		this.socket.on('update', (aUnit, iProcessingTimeNanoSec)=>{
+   		this.socket.on('update', (aUnit, aZone, iProcessingTimeNanoSec)=>{
    			this.aUnit = aUnit;
+   			this.aZone = aZone;
    			this.iProcessingTimeNanoSec = iProcessingTimeNanoSec;
    		});
    	}
@@ -50,6 +52,11 @@ class Screen{
 
    		// キャンバスの塗りつぶし
    		this.renderField();
+
+   		// zoneの描画
+   		this.aZone.forEach((zone)=>{
+   			this.renderZone(zone);
+   		})
 
 
    		// unitの描画
@@ -103,5 +110,28 @@ class Screen{
    		this.context.restore();
 
    		this.context.restore();
+   	}
+
+   	renderZone(zone){
+   		this.context.save();
+   		this.context.translate( zone.fX, zone.fY );
+   		this.context.strokeStyle = RenderingSettings.ZONE_LINECOLOR;
+   		this.context.lineWidth = RenderingSettings.ZONE_LINEWIDTH;
+   		this.context.fillStyle = 'white';
+
+   		this.context.fillRect(-SharedSettings.ZONE_WIDTH*0.5,
+   			-SharedSettings.ZONE_HEIGHT*0.5,
+   			SharedSettings.ZONE_WIDTH,
+   			SharedSettings.ZONE_HEIGHT);
+
+
+   		this.context.strokeRect(-SharedSettings.ZONE_WIDTH*0.5,
+   			-SharedSettings.ZONE_HEIGHT*0.5,
+   			SharedSettings.ZONE_WIDTH,
+   			SharedSettings.ZONE_HEIGHT);
+
+
+   		this.context.restore();
+
    	}
 }

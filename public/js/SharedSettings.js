@@ -7,6 +7,12 @@ class SharedSettings{
 	// unit
 	static get UNIT_WIDTH() { return 16.0; }
 	static get UNIT_HEIGHT() { return 16.0; }
+
+	// zone
+	static get ZONE_ROW_NUM() { return 8; }
+	static get ZONE_COL_NUM() { return 8; }
+	static get ZONE_WIDTH() { return 128.0; }
+	static get ZONE_HEIGHT() { return 128.0; }
 }
 
 if( typeof module !== 'undefined' && typeof module.exports !== 'undefined' )
