@@ -12,7 +12,7 @@ module.exports = class World {
 	constructor(io){
 		this.io = io; // socketIO
 		this.setUnit = new Set(); // unit list
-		this.setZone = new Set(); // zone list
+		this.aZone = new Array(); // zone list
 		this.initZone();
 	}
 
@@ -20,7 +20,7 @@ module.exports = class World {
 		for(let row = 0; row < SharedSettings.ZONE_ROW_NUM; row++){
 			for(let col = 0; col < SharedSettings.ZONE_COL_NUM; col++){
 				const zone = new Zone(row, col);
-				this.setZone.add( zone );
+				this.aZone.push( zone );
 			}
 		}
 	}
@@ -52,8 +52,8 @@ module.exports = class World {
 
 	}
 
-	createUnit(){
-		const unit = new Unit();
+	createUnit(zone){
+		const unit = new Unit(zone);
 		this.setUnit.add( unit );
 		return unit;
 	}

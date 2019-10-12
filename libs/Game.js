@@ -18,7 +18,8 @@ module.exports = class Game{
 
 			// ゲーム開始時の処理
 			socket.on('enter-the-game', ()=>{
-				unit = world.createUnit();
+				let zone = world.aZone[0];
+				unit = world.createUnit(zone);
 			});
 
 			// 切断時の処理
@@ -47,7 +48,7 @@ module.exports = class Game{
 			const iNanosecDiff = hrtimeDiff[0] * 1e9 + hrtimeDiff[1];
 
 			// 最新状況をクライアントに送信
-			io.emit( 'update', Array.from( world.setUnit ), Array.from( world.setZone ), iNanosecDiff);
+			io.emit( 'update', Array.from( world.setUnit ), Array.from( world.aZone ), iNanosecDiff);
 		}, 1000/GameSettings.FRAMERATE); // ms
 
 	}
