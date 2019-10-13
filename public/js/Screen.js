@@ -29,6 +29,9 @@ class Screen{
         this.canvas.addEventListener('mousedown', this.onDown, false);
         this.canvas.addEventListener('mouseup', this.onUp, false);
 
+        this.fromZoneId = -1;
+        this.toZoneId = -1;
+
 
    	}
 
@@ -43,11 +46,29 @@ class Screen{
    		let factorY = canvas.height/Math.min(canvas.clientWidth, canvas.clientHeight);
    		let cX = Math.ceil(factorX*(e.clientX - rect.left - Math.max(canvas.clientWidth - canvas.clientHeight, 0)/2));
    		let cY = Math.ceil(factorY*(e.clientY - rect.top - Math.max(canvas.clientHeight - canvas.clientWidth, 0)/2));
-  		console.log(cX, cY); 		
+  		console.log(cX, cY);
+  		console.log(SharedSettings.COORD_TO_ZONE_ID(cX, cY));
+  		this.fromZoneId = SharedSettings.COORD_TO_ZONE_ID(cX, cY);
    	}
 
    	onUp(e){
    		console.log('onUp, socket.id = %s', socket.id);
+
+   		// canvas上での座標に変換
+   		let rect = e.target.getBoundingClientRect();
+
+   		let factorX = canvas.width/Math.min(canvas.clientWidth, canvas.clientHeight);
+   		let factorY = canvas.height/Math.min(canvas.clientWidth, canvas.clientHeight);
+   		let cX = Math.ceil(factorX*(e.clientX - rect.left - Math.max(canvas.clientWidth - canvas.clientHeight, 0)/2));
+   		let cY = Math.ceil(factorY*(e.clientY - rect.top - Math.max(canvas.clientHeight - canvas.clientWidth, 0)/2));
+  		console.log(cX, cY);
+  		console.log(SharedSettings.COORD_TO_ZONE_ID(cX, cY));
+  		this.toZoneId = SharedSettings.COORD_TO_ZONE_ID(cX, cY);
+
+  		if(this.fromZoneId !== -1 && this.toZoneId !== -1 && this.fromZoneId !== this.toZoneId){
+  			socket.emit( 'move-units-interzonely', this.fromZoneId, this.toZoneId);
+  			
+  		}
    	}
 
 

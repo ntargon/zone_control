@@ -21,6 +21,7 @@ module.exports = class World {
 			for(let col = 0; col < SharedSettings.ZONE_COL_NUM; col++){
 				const zone = new Zone(row, col);
 				this.aZone.push( zone );
+				console.log(row, col, zone.id, zone.fX, zone.fY);
 			}
 		}
 	}
@@ -41,6 +42,7 @@ module.exports = class World {
 		// Unitごとの処理
 		this.setUnit.forEach((unit)=>{
 			unit.update( fDeltaTime );
+			this.updateUnitsBelongingZone(unit);
 		});
 	}
 
@@ -52,13 +54,30 @@ module.exports = class World {
 
 	}
 
-	createUnit(zone){
-		const unit = new Unit(zone);
+	createUnit(zone, socket_id){
+		const unit = new Unit(zone, socket_id);
 		this.setUnit.add( unit );
 		return unit;
 	}
 
 	destroyUnit( unit ){
 		this.setUnit.delete( unit );
+	}
+
+	updateUnitsBelongingZone(unit){
+		if(SharedSettings.COORD_TO_ZONE_ID(unit.fX, unit.fY) !== unit.belongingZone.id){
+			unit.updateZone(this.aZone[SharedSettings.COORD_TO_ZONE_ID(unit.fX, unit.fY)]);
+		}
+	}
+
+	moveUnitsInterzonely(socket_id, fromZoneId, toZoneId){
+		console.log('moveUnitsInterzonely');
+		this.aZone[fromZoneId].setUnit.forEach((unit)=>{
+			console.log(unit.belongingZone.id, unit.toZone.id);
+			console.log(unit.socket_id, socket_id);
+			if(unit.belongingZone === unit.toZone && unit.socket_id === socket_id){
+				unit.startMoveInterZone(this.aZone[toZoneId]);
+			}
+		});
 	}
 }

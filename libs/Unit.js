@@ -8,8 +8,9 @@ module.exports = class Unit extends GameObject{
 	constructor(zone, socket_id){
 
 		super( SharedSettings.UNIT_WIDTH, SharedSettings.UNIT_HEIGHT, 0, 0, 0);
-		this.belongingZone = zone;	
-
+		this.belongingZone = null;
+		this.updateZone(zone);
+		this.toZone = zone;
 
 		// this.objMovement = {};
 		this.fSpeed = GameSettings.UNIT_SPEED;
@@ -25,8 +26,16 @@ module.exports = class Unit extends GameObject{
 
 		this.socket_id = socket_id;
 
-		this.interZone = false;
 
+	}
+
+	updateZone(zone){
+		if( this.belongingZone !== null ){
+			this.belongingZone.setUnit.delete(this);
+		}
+		this.belongingZone = zone;
+		zone.setUnit.add(this);
+		console.log('unit has been added to zone', zone.id);
 	}
 
 	update(fDeltaTime){
@@ -35,10 +44,13 @@ module.exports = class Unit extends GameObject{
 		// this.zY += fDistance * Math.sin( this.fAngle );
 
 
-		if(this.interZone){
+
+		if(this.belongingZone !== this.toZone){
+			console.log('moveInterZone');
 			this.moveInterZone(fDistance);
 		}else{
 			this.moveInsideZone(fDistance);
+			console.log('moveInsideZone');
 		}
 
 	}
@@ -76,7 +88,17 @@ module.exports = class Unit extends GameObject{
 	}
 
 	moveInterZone(fDistance){
-		
+		this.fX += fDistance * Math.cos( this.fAngle );
+		this.fY += fDistance * Math.sin( this.fAngle );
+
+	}
+
+	startMoveInterZone(toZone){
+		this.toZone = toZone;
+		console.log(toZone.fY, this.fY);
+		console.log(toZone.fX, this.fX);
+		console.log(Math.atan2(toZone.fY - this.fY, toZone.fX - this.fX));
+		this.fAngle = Math.atan2(toZone.fY - this.fY, toZone.fX - this.fX);
 	}
 
 }

@@ -22,6 +22,12 @@ module.exports = class Game{
 				unit = world.createUnit(zone, socket.id);
 			});
 
+			// クライアントの入力処理
+			socket.on( 'move-units-interzonely', (fromZoneId, toZoneId)=>{
+				console.log('move-units-interzonely', fromZoneId, toZoneId);
+				world.moveUnitsInterzonely(socket.id, fromZoneId, toZoneId);
+			});
+
 			// 切断時の処理
 			socket.on('disconnect', ()=>{
 				console.log('disconnect : socket.id = %s', socket.id);

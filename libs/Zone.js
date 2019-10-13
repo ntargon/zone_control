@@ -12,13 +12,14 @@ module.exports = class Zone extends GameObject{
 		super( SharedSettings.ZONE_WIDTH, SharedSettings.ZONE_HEIGHT, 0, 0, 0);
 		this.row = row;
 		this.col = col;
+		this.id = row*SharedSettings.ZONE_COL_NUM + col%SharedSettings.ZONE_COL_NUM;
 		this.owner = null;
 
-		this.aUnit = new Array(); // このzoneに存在するunit
+		this.setUnit = new Set(); // このzoneに存在するunit
 
 
-		this.fX = (this.row + 0.5)*SharedSettings.ZONE_WIDTH;
-		this.fY = (this.col + 0.5)*SharedSettings.ZONE_HEIGHT;
+		this.fY = (this.row + 0.5)*SharedSettings.ZONE_WIDTH;
+		this.fX = (this.col + 0.5)*SharedSettings.ZONE_HEIGHT;
 	}
 
 }
