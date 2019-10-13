@@ -23,7 +23,33 @@ class Screen{
         this.context.webkitImageSmoothingEnabled = false;
         this.context.msImageSmoothingEnabled = false;
         this.context.imageSmoothingEnabled = false;
+
+
+        // event listener
+        this.canvas.addEventListener('mousedown', this.onDown, false);
+        this.canvas.addEventListener('mouseup', this.onUp, false);
+
+
    	}
+
+   	onDown(e){
+   		console.log('onDown, socket.id = %s', socket.id);
+
+
+   		// canvas上での座標に変換
+   		let rect = e.target.getBoundingClientRect();
+
+   		let factorX = canvas.width/Math.min(canvas.clientWidth, canvas.clientHeight);
+   		let factorY = canvas.height/Math.min(canvas.clientWidth, canvas.clientHeight);
+   		let cX = Math.ceil(factorX*(e.clientX - rect.left - Math.max(canvas.clientWidth - canvas.clientHeight, 0)/2));
+   		let cY = Math.ceil(factorY*(e.clientY - rect.top - Math.max(canvas.clientHeight - canvas.clientWidth, 0)/2));
+  		console.log(cX, cY); 		
+   	}
+
+   	onUp(e){
+   		console.log('onUp, socket.id = %s', socket.id);
+   	}
+
 
    	initSocket(){
 

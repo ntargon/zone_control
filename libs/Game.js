@@ -19,7 +19,7 @@ module.exports = class Game{
 			// ゲーム開始時の処理
 			socket.on('enter-the-game', ()=>{
 				let zone = world.aZone[0];
-				unit = world.createUnit(zone);
+				unit = world.createUnit(zone, socket.id);
 			});
 
 			// 切断時の処理

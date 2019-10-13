@@ -5,7 +5,7 @@ const GameSettings = require('./GameSettings.js');
 
 module.exports = class Unit extends GameObject{
 
-	constructor(zone){
+	constructor(zone, socket_id){
 
 		super( SharedSettings.UNIT_WIDTH, SharedSettings.UNIT_HEIGHT, 0, 0, 0);
 		this.belongingZone = zone;	
@@ -23,6 +23,10 @@ module.exports = class Unit extends GameObject{
 		this.fX = this.belongingZone.fX + this.zX;
 		this.fY = this.belongingZone.fY + this.zY;
 
+		this.socket_id = socket_id;
+
+		this.interZone = false;
+
 	}
 
 	update(fDeltaTime){
@@ -30,6 +34,16 @@ module.exports = class Unit extends GameObject{
 		// this.zX += fDistance * Math.cos( this.fAngle );
 		// this.zY += fDistance * Math.sin( this.fAngle );
 
+
+		if(this.interZone){
+			this.moveInterZone(fDistance);
+		}else{
+			this.moveInsideZone(fDistance);
+		}
+
+	}
+
+	moveInsideZone(fDistance){
 		// HACK: もっと簡潔にできる。
 		if(this.zX + fDistance*Math.cos(this.fAngle) - SharedSettings.UNIT_WIDTH * 0.5 < -SharedSettings.ZONE_WIDTH * 0.5){
 			let toWall = -this.zX + SharedSettings.UNIT_WIDTH*0.5 - SharedSettings.ZONE_WIDTH*0.5;
@@ -59,7 +73,10 @@ module.exports = class Unit extends GameObject{
 		this.fX = this.belongingZone.fX + this.zX;
 		this.fY = this.belongingZone.fY + this.zY;
 
+	}
 
+	moveInterZone(fDistance){
+		
 	}
 
 }

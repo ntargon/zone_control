@@ -14,6 +14,8 @@ module.exports = class Zone extends GameObject{
 		this.col = col;
 		this.owner = null;
 
+		this.aUnit = new Array(); // このzoneに存在するunit
+
 
 		this.fX = (this.row + 0.5)*SharedSettings.ZONE_WIDTH;
 		this.fY = (this.col + 0.5)*SharedSettings.ZONE_HEIGHT;
