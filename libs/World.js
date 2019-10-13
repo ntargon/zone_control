@@ -41,8 +41,8 @@ module.exports = class World {
 	updateObjects(fDeltaTime){
 		// Unitごとの処理
 		this.setUnit.forEach((unit)=>{
-			unit.update( fDeltaTime );
 			this.updateUnitsBelongingZone(unit);
+			unit.update( fDeltaTime );
 		});
 	}
 
@@ -65,7 +65,7 @@ module.exports = class World {
 	}
 
 	updateUnitsBelongingZone(unit){
-		if(SharedSettings.COORD_TO_ZONE_ID(unit.fX, unit.fY) !== unit.belongingZone.id){
+		if(SharedSettings.COORD_TO_ZONE_ID(unit.fX, unit.fY) !== -1 && SharedSettings.COORD_TO_ZONE_ID(unit.fX, unit.fY) !== unit.belongingZone.id){
 			unit.updateZone(this.aZone[SharedSettings.COORD_TO_ZONE_ID(unit.fX, unit.fY)]);
 		}
 	}

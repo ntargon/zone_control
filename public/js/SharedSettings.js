@@ -14,8 +14,17 @@ class SharedSettings{
 	static get ZONE_WIDTH() { return 128.0; }
 	static get ZONE_HEIGHT() { return 128.0; }
 	static COORD_TO_ZONE_ID(x, y) { 
+		// fieldの外
 		if(x < 0 || x >= SharedSettings.FIELD_WIDTH || y < 0 || y >= SharedSettings.FIELD_HEIGHT){
 			return -1; // invalid
+		}
+
+		// 境界
+		if(x%SharedSettings.ZONE_WIDTH < SharedSettings.UNIT_WIDTH*0.5 || x%SharedSettings.ZONE_WIDTH > SharedSettings.ZONE_WIDTH - SharedSettings.UNIT_WIDTH*0.5){
+			return -1;
+		}
+		if(y%SharedSettings.ZONE_HEIGHT < SharedSettings.UNIT_HEIGHT*0.5 || y%SharedSettings.ZONE_HEIGHT > SharedSettings.ZONE_HEIGHT - SharedSettings.UNIT_HEIGHT*0.5){
+			return -1;
 		}
 		return Math.floor(x/SharedSettings.ZONE_WIDTH) + Math.floor(y/SharedSettings.ZONE_HEIGHT)*SharedSettings.ZONE_COL_NUM; 
 	}

@@ -31,6 +31,10 @@ module.exports = class Unit extends GameObject{
 
 	updateZone(zone){
 		if( this.belongingZone !== null ){
+			// zX, zYを更新
+			this.zX = this.fX - zone.fX;
+			this.zY = this.fY - zone.fY;
+
 			this.belongingZone.setUnit.delete(this);
 		}
 		this.belongingZone = zone;
@@ -46,11 +50,11 @@ module.exports = class Unit extends GameObject{
 
 
 		if(this.belongingZone !== this.toZone){
-			console.log('moveInterZone');
+			// console.log('moveInterZone');
 			this.moveInterZone(fDistance);
 		}else{
 			this.moveInsideZone(fDistance);
-			console.log('moveInsideZone');
+			// console.log('moveInsideZone');
 		}
 
 	}
@@ -61,10 +65,12 @@ module.exports = class Unit extends GameObject{
 			let toWall = -this.zX + SharedSettings.UNIT_WIDTH*0.5 - SharedSettings.ZONE_WIDTH*0.5;
 			this.zX += (toWall - fDistance*Math.cos(this.fAngle));
 			this.fAngle = (-(this.fAngle + Math.PI))%(2*Math.PI);
+			console.log('x-');
 		}else if(this.zX + fDistance*Math.cos(this.fAngle) + SharedSettings.UNIT_WIDTH * 0.5 > SharedSettings.ZONE_WIDTH * 0.5){
 			let toWall = -this.zX - SharedSettings.UNIT_WIDTH*0.5 + SharedSettings.ZONE_WIDTH*0.5;
 			this.zX += (toWall - fDistance*Math.cos(this.fAngle));
 			this.fAngle = (-(this.fAngle + Math.PI))%(2*Math.PI);
+			console.log('x+');
 		}else{
 			this.zX += fDistance * Math.cos( this.fAngle );
 		}
@@ -73,10 +79,12 @@ module.exports = class Unit extends GameObject{
 			let toWall = -this.zY + SharedSettings.UNIT_HEIGHT*0.5 - SharedSettings.ZONE_HEIGHT*0.5;
 			this.zY += (toWall - fDistance*Math.sin(this.fAngle));
 			this.fAngle *= -1;
+			console.log('y-');
 		}else if(this.zY + fDistance*Math.sin(this.fAngle) + SharedSettings.UNIT_HEIGHT * 0.5 > SharedSettings.ZONE_HEIGHT * 0.5){
 			let toWall = -this.zY - SharedSettings.UNIT_HEIGHT*0.5 + SharedSettings.ZONE_HEIGHT*0.5;
 			this.zY += (toWall - fDistance*Math.sin(this.fAngle));
 			this.fAngle *= -1;
+			console.log('y+');
 		}else{
 			this.zY += fDistance * Math.sin( this.fAngle );
 		}
