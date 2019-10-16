@@ -28,6 +28,8 @@ class Screen{
         // event listener
         this.canvas.addEventListener('mousedown', this.onDown, false);
         this.canvas.addEventListener('mouseup', this.onUp, false);
+        this.canvas.addEventListener('touchstart', this.onDown, false);
+        this.canvas.addEventListener('touchenc', this.onUp, false);
 
         this.fromZoneId = -1;
         this.toZoneId = -1;
