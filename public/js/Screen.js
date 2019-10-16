@@ -25,15 +25,65 @@ class Screen{
         this.context.imageSmoothingEnabled = false;
 
 
+        //
+        this.canvas.addEventListener('touchstart', this.stopDefault, false);
+        this.canvas.addEventListener('touchend', this.stopDefault, false);
+        this.canvas.addEventListener('touchmove', this.stopDefault, false);
+
         // event listener
         this.canvas.addEventListener('mousedown', this.onDown, false);
         this.canvas.addEventListener('mouseup', this.onUp, false);
+        this.canvas.addEventListener('touchstart', this.onTouchStart, false);
+        this.canvas.addEventListener('touchend', this.onTouchEnd, false);
+
+
 
         this.fromZoneId = -1;
         this.toZoneId = -1;
 
 
    	}
+
+    stopDefault(e){
+      e.preventDefault();
+    }
+
+    onTouchStart(e){
+      // console.log(e);
+      // console.log(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+      // canvas上での座標に変換
+      let rect = e.target.getBoundingClientRect();
+
+      let factorX = canvas.width/Math.min(canvas.clientWidth, canvas.clientHeight);
+      let factorY = canvas.height/Math.min(canvas.clientWidth, canvas.clientHeight);
+      let cX = Math.ceil(factorX*(e.changedTouches[0].clientX - rect.left - Math.max(canvas.clientWidth - canvas.clientHeight, 0)/2));
+      let cY = Math.ceil(factorY*(e.changedTouches[0].clientY - rect.top - Math.max(canvas.clientHeight - canvas.clientWidth, 0)/2));
+      console.log(cX, cY);
+      console.log(SharedSettings.COORD_TO_ZONE_ID(cX, cY));
+      this.fromZoneId = SharedSettings.COORD_TO_ZONE_ID(cX, cY);
+
+
+    }
+
+    onTouchEnd(e){
+      // console.log(e);
+      // console.log(e.changedTouches[0].clientX);
+      // canvas上での座標に変換
+      let rect = e.target.getBoundingClientRect();
+
+      let factorX = canvas.width/Math.min(canvas.clientWidth, canvas.clientHeight);
+      let factorY = canvas.height/Math.min(canvas.clientWidth, canvas.clientHeight);
+      let cX = Math.ceil(factorX*(e.changedTouches[0].clientX - rect.left - Math.max(canvas.clientWidth - canvas.clientHeight, 0)/2));
+      let cY = Math.ceil(factorY*(e.changedTouches[0].clientY - rect.top - Math.max(canvas.clientHeight - canvas.clientWidth, 0)/2));
+      console.log(cX, cY);
+      console.log(SharedSettings.COORD_TO_ZONE_ID(cX, cY));
+      this.toZoneId = SharedSettings.COORD_TO_ZONE_ID(cX, cY);
+
+      if(this.fromZoneId !== -1 && this.toZoneId !== -1 && this.fromZoneId !== this.toZoneId){
+        socket.emit( 'move-units-interzonely', this.fromZoneId, this.toZoneId);
+        
+      }
+    }
 
    	onDown(e){
    		console.log('onDown, socket.id = %s', socket.id);
