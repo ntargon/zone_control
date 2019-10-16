@@ -8,53 +8,59 @@ const GameSettings = require('./GameSettings.js');
 module.exports = class Game{
 	// 始動
 	start(io){
-		const world = new World(io);
+		// const world = new World(io);
+		const aWorld = new Array();
 		let iTimeLast = Date.now();
 
 		// 接続時の処理
 		io.on('connection', (socket)=>{
 			console.log('connection : socket.id = %s', socket.id);
-			let unit = null; // コネクションごとのunit object
+			// let unit = null; // コネクションごとのunit object
 
 			// ゲーム開始時の処理
-			socket.on('enter-the-game', ()=>{
-				let zone = world.aZone[0];
-				unit = world.createUnit(zone, socket.id);
-			});
+			// socket.on('enter-the-game', ()=>{
+			// 	let zone = world.aZone[0];
+			// 	unit = world.createUnit(zone, socket.id);
+			// });
 
 			// クライアントの入力処理
-			socket.on( 'move-units-interzonely', (fromZoneId, toZoneId)=>{
-				console.log('move-units-interzonely', fromZoneId, toZoneId);
-				world.moveUnitsInterzonely(socket.id, fromZoneId, toZoneId);
-			});
+			// socket.on( 'move-units-interzonely', (fromZoneId, toZoneId)=>{
+			// 	console.log('move-units-interzonely', fromZoneId, toZoneId);
+			// 	world.moveUnitsInterzonely(socket.id, fromZoneId, toZoneId);
+			// });
 
 			// 切断時の処理
 			socket.on('disconnect', ()=>{
 				console.log('disconnect : socket.id = %s', socket.id);
-				if(!unit){ return; }
-				world.destroyUnit( unit );
-				unit = null;
+				// if(!unit){ return; }
+				// world.destroyUnit( unit );
+				// unit = null;
 			});
 		});
 
 		// 周期的処理
 		setInterval(()=>{
-			// 経過時間の算出
-			const iTimeCurrent = Date.now(); // ms
-			const fDeltaTime = ( iTimeCurrent - iTimeLast ) * 0.001; // s
-			iTimeLast = iTimeCurrent;
+			aWorld.forEach((world)=>{
+				// このworldでゲームが始まっていなければでる。
+				if( !world.state !== 'playing' ){ return; }
 
-			// 処理時間計測用
-			const hrtime = process.hrtime(); // ns
+				// 経過時間の算出
+				const iTimeCurrent = Date.now(); // ms
+				const fDeltaTime = ( iTimeCurrent - iTimeLast ) * 0.001; // s
+				iTimeLast = iTimeCurrent;
 
-			// ゲームワールドの更新
-			world.update(fDeltaTime);
+				// 処理時間計測用
+				const hrtime = process.hrtime(); // ns
 
-			const hrtimeDiff = process.hrtime(hrtime);
-			const iNanosecDiff = hrtimeDiff[0] * 1e9 + hrtimeDiff[1];
+				// ゲームワールドの更新
+				world.update(fDeltaTime);
 
-			// 最新状況をクライアントに送信
-			io.emit( 'update', Array.from( world.setUnit ), Array.from( world.aZone ), iNanosecDiff);
+				const hrtimeDiff = process.hrtime(hrtime);
+				const iNanosecDiff = hrtimeDiff[0] * 1e9 + hrtimeDiff[1];
+
+				// 最新状況をクライアントに送信
+				io.to(world.room).emit( 'update', Array.from( world.setUnit ), Array.from( world.aZone ), iNanosecDiff);
+			});
 		}, 1000/GameSettings.FRAMERATE); // ms
 
 	}

@@ -76,7 +76,7 @@ class Screen{
 
    		this.socket.on('connect', ()=>{
    			console.log('connect : socket.id = %s', socket.id);
-   			this.socket.emit('enter-the-game');
+   			// this.socket.emit('enter-the-game');
    		});
 
    		this.socket.on('update', (aUnit, aZone, iProcessingTimeNanoSec)=>{
@@ -101,9 +101,11 @@ class Screen{
    		this.renderField();
 
    		// zoneの描画
-   		this.aZone.forEach((zone)=>{
-   			this.renderZone(zone);
-   		})
+      if( null !== this.aZone ){
+        this.aZone.forEach((zone)=>{
+          this.renderZone(zone);
+        })        
+      }
 
 
    		// unitの描画

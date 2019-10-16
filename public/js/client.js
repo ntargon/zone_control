@@ -16,3 +16,12 @@ screen.animate(0);
 $(window).on('beforeunload', (event)=>{
 	socket.disconnect();
 });
+
+
+$('#create-room-button').on('click', ()=>{
+	let roomName = $('#roomname').val();
+
+	if( roomName.length > 0){
+		console.log(roomName);		
+	}
+});
