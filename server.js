@@ -24,7 +24,7 @@ app.use(express.static(__dirname + '/public'));
 // サーバの起動
 server.listen(
 	PORT_NO,
-	"10.10.217.225",
+	// "10.10.217.225",
 	() => {
 		console.log('Starting server on port %d', PORT_NO);
 	});
