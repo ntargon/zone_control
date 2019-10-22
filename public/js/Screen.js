@@ -130,6 +130,7 @@ class Screen{
    		});
 
    		this.socket.on('update', (aUnit, aZone, iProcessingTimeNanoSec)=>{
+        // console.log('screen update');
    			this.aUnit = aUnit;
    			this.aZone = aZone;
    			this.iProcessingTimeNanoSec = iProcessingTimeNanoSec;
@@ -144,6 +145,7 @@ class Screen{
    	}
 
    	render(iTimeCurrent){
+      // console.log('render');
    		// キャンバスのクリア
    		this.context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -161,9 +163,10 @@ class Screen{
    		// unitの描画
    		if( null !== this.aUnit ){
    			const fTimeCurrentSec = iTimeCurrent * 0.001;
-   			const iIndexFrame = 0;
+   			// const iIndexFrame = 0;
    			this.aUnit.forEach((unit)=>{
-   				this.renderUnit( unit, iIndexFrame );
+          console.log(unit.iIndexFrame);
+   				this.renderUnit( unit );
    			});
    		}
 
@@ -191,7 +194,11 @@ class Screen{
    		this.context.restore();
    	}
 
-   	renderUnit( unit, iIndexFrame ){
+   	renderUnit( unit ){
+      // console.log(unit.fX, unit.iIndexFrame);
+      // console.log(unit.socket.id)
+      const iIndexFrame = unit.socket_id === socket.id ? 0 : 1;
+      
    		this.context.save();
 
    		this.context.translate( unit.fX, unit.fY );

@@ -43,6 +43,7 @@ module.exports = class Unit extends GameObject{
 	}
 
 	update(fDeltaTime){
+		// console.log(this.socket_id);
 		const fDistance = this.fSpeed * fDeltaTime;
 		// this.zX += fDistance * Math.cos( this.fAngle );
 		// this.zY += fDistance * Math.sin( this.fAngle );
@@ -107,6 +108,15 @@ module.exports = class Unit extends GameObject{
 		console.log(toZone.fX, this.fX);
 		console.log(Math.atan2(toZone.fY - this.fY, toZone.fX - this.fX));
 		this.fAngle = Math.atan2(toZone.fY - this.fY, toZone.fX - this.fX);
+	}
+
+	toJSON(){
+		return {
+			fX: this.fX,
+			fY: this.fY,
+			fAngle: this.fAngle,
+			socket_id: this.socket_id
+		};
 	}
 
 }

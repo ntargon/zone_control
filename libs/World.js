@@ -14,6 +14,9 @@ module.exports = class World {
 		this.setUnit = new Set(); // unit list
 		this.aZone = new Array(); // zone list
 		this.initZone();
+		this.state = 'waiting'; // waiting or playing
+		this.numberOfPlayer = 0;
+		this.iTimeLast = 0;
 	}
 
 	initZone(){
@@ -21,7 +24,7 @@ module.exports = class World {
 			for(let col = 0; col < SharedSettings.ZONE_COL_NUM; col++){
 				const zone = new Zone(row, col);
 				this.aZone.push( zone );
-				console.log(row, col, zone.id, zone.fX, zone.fY);
+				// console.log(row, col, zone.id, zone.fX, zone.fY);
 			}
 		}
 	}
@@ -63,6 +66,7 @@ module.exports = class World {
 	destroyUnit( unit ){
 		this.setUnit.delete( unit );
 	}
+
 
 	updateUnitsBelongingZone(unit){
 		if(SharedSettings.COORD_TO_ZONE_ID(unit.fX, unit.fY) !== -1 && SharedSettings.COORD_TO_ZONE_ID(unit.fX, unit.fY) !== unit.belongingZone.id){

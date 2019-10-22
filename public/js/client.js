@@ -22,6 +22,34 @@ $('#create-room-button').on('click', ()=>{
 	let roomName = $('#roomname').val();
 
 	if( roomName.length > 0){
-		console.log(roomName);		
+		console.log(roomName);	
+		socket.emit('create-room', roomName);	
+	}
+
+	$('#roomname').val('');
+});
+
+$('#enter-room-button').on('click', ()=>{
+	var roomName = $("input[name='room-name']:checked").val();
+
+	if(roomName === void 0){
+
+	}else{
+		socket.emit('enter-room', roomName);
+		$('#start-screen').hide();
 	}
 });
+
+socket.on('update-room-screen', (aRoomName)=>{
+	console.log('update-room-screen', aRoomName);
+	$('#room-screen').empty();
+	aRoomName.forEach((roomName)=>{
+		$('#room-screen').append(`<input type="radio" name="room-name" value="${roomName}">${roomName} <br>`);
+	});
+});
+
+socket.on('return-start-screen', ()=>{
+	// $('#start-screen').show();
+	location.reload();
+	alert('disconnect');
+})
