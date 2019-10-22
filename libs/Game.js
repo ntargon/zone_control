@@ -43,6 +43,13 @@ module.exports = class Game{
 				world.moveUnitsInterzonely(socket.id, fromZoneId, toZoneId);
 			});
 
+			socket.on( 'update-arrow', (fromZoneId, toZoneId)=>{
+				socket.emit('update-arrow', fromZoneId, toZoneId);
+			});
+
+			socket.on('show-arrow', ()=>{socket.emit('show-arrow');});
+			socket.on('hide-arrow', ()=>{socket.emit('hide-arrow');});
+
 			socket.on('create-room', (roomName)=>{
 				if(hWorld[roomName] === void 0){
 					hWorld[roomName] = new World(io);

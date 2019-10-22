@@ -28,6 +28,24 @@ class SharedSettings{
 		}
 		return Math.floor(x/SharedSettings.ZONE_WIDTH) + Math.floor(y/SharedSettings.ZONE_HEIGHT)*SharedSettings.ZONE_COL_NUM; 
 	}
+
+	// zoneIDからzoneの中心の座標を返す
+	static ZONE_ID_TO_COORD(zoneID){
+		const zoneNum = SharedSettings.ZONE_ROW_NUM*SharedSettings.ZONE_COL_NUM;
+
+		// for invalid zoneID
+		if(zoneID < 0 || zoneID >= zoneNum){
+			return {cX: -1, cY: -1};
+		}
+
+		let col_id = zoneID%SharedSettings.ZONE_COL_NUM;
+		let row_id = Math.floor(zoneID/SharedSettings.ZONE_COL_NUM);
+
+		let cX = (col_id + 0.5)*SharedSettings.ZONE_WIDTH;
+		let cY = (row_id + 0.5)*SharedSettings.ZONE_HEIGHT;
+
+		return {cX: cX, cY: cY};
+	}
 }
 
 if( typeof module !== 'undefined' && typeof module.exports !== 'undefined' )

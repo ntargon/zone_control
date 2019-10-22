@@ -53,3 +53,20 @@ socket.on('return-start-screen', ()=>{
 	location.reload();
 	alert('disconnect');
 })
+
+
+socket.on('update-arrow', (fromZoneId, toZoneId)=>{
+	// console.log('update-arrow', fromZoneId, toZoneId);
+	screen.isClicked = true;
+	screen.fromZoneId = fromZoneId;
+	screen.toZoneId = toZoneId;
+});
+
+socket.on('show-arrow', ()=>{
+	screen.fromZoneId = -1;
+	screen.toZoneId = -1;
+});
+
+socket.on('hide-arrow', ()=>{
+	screen.isClicked = false;
+})

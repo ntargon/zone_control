@@ -17,6 +17,9 @@ class Screen{
 		// ソケットの初期化
 		this.initSocket();
 
+    // mouseが押されてるか保持
+    this.isClicked = false;
+
 		// コンテキストの初期化
 		// アンチウェイリアスの抑止
         this.context.mozImageSmoothingEnabled = false;
@@ -35,6 +38,8 @@ class Screen{
         this.canvas.addEventListener('mouseup', this.onUp, false);
         this.canvas.addEventListener('touchstart', this.onTouchStart, false);
         this.canvas.addEventListener('touchend', this.onTouchEnd, false);
+        this.canvas.addEventListener('mousemove', this.onMouseMove, false);
+        this.canvas.addEventListener('touchmove', this.onTouchMove, false);
 
 
 
@@ -52,14 +57,18 @@ class Screen{
       // console.log(e);
       // console.log(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
       // canvas上での座標に変換
+      socket.emit('show-arrow');
+      this.isClicked = true;
+
+
       let rect = e.target.getBoundingClientRect();
 
       let factorX = canvas.width/Math.min(canvas.clientWidth, canvas.clientHeight);
       let factorY = canvas.height/Math.min(canvas.clientWidth, canvas.clientHeight);
       let cX = Math.ceil(factorX*(e.changedTouches[0].clientX - rect.left - Math.max(canvas.clientWidth - canvas.clientHeight, 0)/2));
       let cY = Math.ceil(factorY*(e.changedTouches[0].clientY - rect.top - Math.max(canvas.clientHeight - canvas.clientWidth, 0)/2));
-      console.log(cX, cY);
-      console.log(SharedSettings.COORD_TO_ZONE_ID(cX, cY));
+      // console.log(cX, cY);
+      // console.log(SharedSettings.COORD_TO_ZONE_ID(cX, cY));
       this.fromZoneId = SharedSettings.COORD_TO_ZONE_ID(cX, cY);
 
 
@@ -69,25 +78,47 @@ class Screen{
       // console.log(e);
       // console.log(e.changedTouches[0].clientX);
       // canvas上での座標に変換
-      let rect = e.target.getBoundingClientRect();
-
-      let factorX = canvas.width/Math.min(canvas.clientWidth, canvas.clientHeight);
-      let factorY = canvas.height/Math.min(canvas.clientWidth, canvas.clientHeight);
-      let cX = Math.ceil(factorX*(e.changedTouches[0].clientX - rect.left - Math.max(canvas.clientWidth - canvas.clientHeight, 0)/2));
-      let cY = Math.ceil(factorY*(e.changedTouches[0].clientY - rect.top - Math.max(canvas.clientHeight - canvas.clientWidth, 0)/2));
-      console.log(cX, cY);
-      console.log(SharedSettings.COORD_TO_ZONE_ID(cX, cY));
-      this.toZoneId = SharedSettings.COORD_TO_ZONE_ID(cX, cY);
+      socket.emit('hide-arrow');
+      this.isClicked = false;
 
       if(this.fromZoneId !== -1 && this.toZoneId !== -1 && this.fromZoneId !== this.toZoneId){
         socket.emit( 'move-units-interzonely', this.fromZoneId, this.toZoneId);
         
       }
+
+      this.fromZoneId = -1;
+      this.toZoneId = -1;
+    }
+
+    onTouchMove(e){
+      console.log('ontouchmove');
+      if(this.fromZoneId !== -1 && this.isClicked){
+        // canvas上での座標に変換
+        let rect = e.target.getBoundingClientRect();
+
+        let factorX = canvas.width/Math.min(canvas.clientWidth, canvas.clientHeight);
+        let factorY = canvas.height/Math.min(canvas.clientWidth, canvas.clientHeight);
+        let cX = Math.ceil(factorX*(e.changedTouches[0].clientX - rect.left - Math.max(canvas.clientWidth - canvas.clientHeight, 0)/2));
+        let cY = Math.ceil(factorY*(e.changedTouches[0].clientY - rect.top - Math.max(canvas.clientHeight - canvas.clientWidth, 0)/2));
+        // console.log(cX, cY);
+        // console.log(SharedSettings.COORD_TO_ZONE_ID(cX, cY));
+        this.toZoneId = SharedSettings.COORD_TO_ZONE_ID(cX, cY);
+        // console.log(this.fromZoneId, this.toZoneId)
+        if(this.toZoneId !== -1){
+          socket.emit( 'update-arrow', this.fromZoneId, this.toZoneId);
+        }else{
+          socket.emit( 'hide-arrow' );
+        }
+
+      }
+
     }
 
    	onDown(e){
-   		console.log('onDown, socket.id = %s', socket.id);
+   		// console.log('onDown, socket.id = %s', socket.id);
 
+      socket.emit('show-arrow');
+      this.isClicked = true;
 
    		// canvas上での座標に変換
    		let rect = e.target.getBoundingClientRect();
@@ -96,31 +127,51 @@ class Screen{
    		let factorY = canvas.height/Math.min(canvas.clientWidth, canvas.clientHeight);
    		let cX = Math.ceil(factorX*(e.clientX - rect.left - Math.max(canvas.clientWidth - canvas.clientHeight, 0)/2));
    		let cY = Math.ceil(factorY*(e.clientY - rect.top - Math.max(canvas.clientHeight - canvas.clientWidth, 0)/2));
-  		console.log(cX, cY);
-  		console.log(SharedSettings.COORD_TO_ZONE_ID(cX, cY));
+  		// console.log(cX, cY);
+  		// console.log(SharedSettings.COORD_TO_ZONE_ID(cX, cY));
   		this.fromZoneId = SharedSettings.COORD_TO_ZONE_ID(cX, cY);
    	}
 
    	onUp(e){
-   		console.log('onUp, socket.id = %s', socket.id);
+   		// console.log('onUp, socket.id = %s', socket.id);
 
-   		// canvas上での座標に変換
-   		let rect = e.target.getBoundingClientRect();
+      socket.emit('hide-arrow');
+      this.isClicked = false;
 
-   		let factorX = canvas.width/Math.min(canvas.clientWidth, canvas.clientHeight);
-   		let factorY = canvas.height/Math.min(canvas.clientWidth, canvas.clientHeight);
-   		let cX = Math.ceil(factorX*(e.clientX - rect.left - Math.max(canvas.clientWidth - canvas.clientHeight, 0)/2));
-   		let cY = Math.ceil(factorY*(e.clientY - rect.top - Math.max(canvas.clientHeight - canvas.clientWidth, 0)/2));
-  		console.log(cX, cY);
-  		console.log(SharedSettings.COORD_TO_ZONE_ID(cX, cY));
-  		this.toZoneId = SharedSettings.COORD_TO_ZONE_ID(cX, cY);
+
+
 
   		if(this.fromZoneId !== -1 && this.toZoneId !== -1 && this.fromZoneId !== this.toZoneId){
   			socket.emit( 'move-units-interzonely', this.fromZoneId, this.toZoneId);
   			
   		}
+
+      this.fromZoneId = -1;
+      this.toZoneId = -1;
    	}
 
+    onMouseMove(e){
+      if(this.fromZoneId !== -1 && this.isClicked){
+        // canvas上での座標に変換
+        let rect = e.target.getBoundingClientRect();
+
+        let factorX = canvas.width/Math.min(canvas.clientWidth, canvas.clientHeight);
+        let factorY = canvas.height/Math.min(canvas.clientWidth, canvas.clientHeight);
+        let cX = Math.ceil(factorX*(e.clientX - rect.left - Math.max(canvas.clientWidth - canvas.clientHeight, 0)/2));
+        let cY = Math.ceil(factorY*(e.clientY - rect.top - Math.max(canvas.clientHeight - canvas.clientWidth, 0)/2));
+        // console.log(cX, cY);
+        // console.log(SharedSettings.COORD_TO_ZONE_ID(cX, cY));
+        this.toZoneId = SharedSettings.COORD_TO_ZONE_ID(cX, cY);
+        // console.log(this.fromZoneId, this.toZoneId)
+        if(this.toZoneId !== -1){
+          socket.emit( 'update-arrow', this.fromZoneId, this.toZoneId);
+        }else{
+          socket.emit( 'hide-arrow' );
+        }
+
+      }
+
+    }
 
    	initSocket(){
 
@@ -165,7 +216,6 @@ class Screen{
    			const fTimeCurrentSec = iTimeCurrent * 0.001;
    			// const iIndexFrame = 0;
    			this.aUnit.forEach((unit)=>{
-          console.log(unit.iIndexFrame);
    				this.renderUnit( unit );
    			});
    		}
@@ -185,6 +235,15 @@ class Screen{
    		this.context.fillText((this.iProcessingTimeNanoSec * 1e-9).toFixed(9) + ' [s]',
    			this.canvas.width - 30 * 10, 40);
    		this.context.restore();
+
+
+      // 矢印の描画
+      // console.log(this.isClicked, this.fromZoneId, this.toZoneId);
+      if(this.isClicked && this.fromZoneId !== -1 && this.toZoneId !== -1 && this.fromZoneId !== this.toZoneId){
+        // console.log('aroww')
+        this.renderArrow(this.fromZoneId, this.toZoneId);
+      }
+
 
    	}
 
@@ -240,4 +299,31 @@ class Screen{
    		this.context.restore();
 
    	}
+
+    renderArrow(fromZoneId, toZoneId){
+      this.context.save();
+
+      this.context.lineWidth = 2;
+      this.context.strokeStyle = 'red';
+
+      this.context.beginPath();
+      let {cX:fromCX, cY:fromCY} = SharedSettings.ZONE_ID_TO_COORD(fromZoneId);
+      let {cX:toCX, cY:toCY} = SharedSettings.ZONE_ID_TO_COORD(toZoneId);
+      // console.log(fromCX, fromCY, toCX, toCY);
+      let dx = toCX - fromCX;
+      let dy = toCY - fromCY;
+      let theta = Math.atan2(dy, dx); // 直線の傾き
+      let phi = Math.PI/4; // 矢印部の直線からの角度
+      let length = 10; // 矢印部の長さ
+
+      this.context.moveTo(fromCX, fromCY);
+      this.context.lineTo(toCX, toCY);
+      this.context.lineTo(toCX + length*Math.cos(theta + Math.PI - phi), toCY + length*Math.sin(theta + Math.PI - phi));
+      this.context.moveTo(toCX, toCY);
+      this.context.lineTo(toCX + length*Math.cos(theta + Math.PI + phi), toCY + length*Math.sin(theta + Math.PI + phi));
+
+      this.context.stroke();
+
+      this.context.restore();
+    }
 }
