@@ -20,12 +20,12 @@ class SharedSettings{
 		}
 
 		// 境界
-		if(x%SharedSettings.ZONE_WIDTH < SharedSettings.UNIT_WIDTH*0.5 || x%SharedSettings.ZONE_WIDTH > SharedSettings.ZONE_WIDTH - SharedSettings.UNIT_WIDTH*0.5){
-			return -1;
-		}
-		if(y%SharedSettings.ZONE_HEIGHT < SharedSettings.UNIT_HEIGHT*0.5 || y%SharedSettings.ZONE_HEIGHT > SharedSettings.ZONE_HEIGHT - SharedSettings.UNIT_HEIGHT*0.5){
-			return -1;
-		}
+		// if(x%SharedSettings.ZONE_WIDTH < SharedSettings.UNIT_WIDTH*0.5 || x%SharedSettings.ZONE_WIDTH > SharedSettings.ZONE_WIDTH - SharedSettings.UNIT_WIDTH*0.5){
+		// 	return -1;
+		// }
+		// if(y%SharedSettings.ZONE_HEIGHT < SharedSettings.UNIT_HEIGHT*0.5 || y%SharedSettings.ZONE_HEIGHT > SharedSettings.ZONE_HEIGHT - SharedSettings.UNIT_HEIGHT*0.5){
+		// 	return -1;
+		// }
 		return Math.floor(x/SharedSettings.ZONE_WIDTH) + Math.floor(y/SharedSettings.ZONE_HEIGHT)*SharedSettings.ZONE_COL_NUM; 
 	}
 

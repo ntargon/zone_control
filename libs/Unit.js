@@ -62,34 +62,30 @@ module.exports = class Unit extends GameObject{
 
 	moveInsideZone(fDistance){
 		// HACK: もっと簡潔にできる。
-		if(this.zX + fDistance*Math.cos(this.fAngle) - SharedSettings.UNIT_WIDTH * 0.5 < -SharedSettings.ZONE_WIDTH * 0.5){
-			let toWall = -this.zX + SharedSettings.UNIT_WIDTH*0.5 - SharedSettings.ZONE_WIDTH*0.5;
-			this.zX += (toWall - fDistance*Math.cos(this.fAngle));
+
+		// x方向
+		if(Math.abs(this.zX + fDistance*Math.cos(this.fAngle))  > (SharedSettings.ZONE_WIDTH - SharedSettings.UNIT_WIDTH)/2 &&
+			Math.abs(this.zX + Math.sign(Math.cos(this.fAngle))*SharedSettings.ZONE_WIDTH*0.5) > (SharedSettings.ZONE_WIDTH - SharedSettings.UNIT_WIDTH)/2){
+			
+			let toWall = SharedSettings.ZONE_WIDTH*0.5 - Math.abs(this.zX) - SharedSettings.UNIT_WIDTH*0.5;
+			let rest = fDistance*Math.cos(this.fAngle) - toWall;
+			this.zX = (SharedSettings.ZONE_WIDTH*0.5 - SharedSettings.UNIT_WIDTH*0.5 - rest)*Math.sign(Math.cos(this.fAngle));
 			this.fAngle = (-(this.fAngle + Math.PI))%(2*Math.PI);
-			console.log('x-');
-		}else if(this.zX + fDistance*Math.cos(this.fAngle) + SharedSettings.UNIT_WIDTH * 0.5 > SharedSettings.ZONE_WIDTH * 0.5){
-			let toWall = -this.zX - SharedSettings.UNIT_WIDTH*0.5 + SharedSettings.ZONE_WIDTH*0.5;
-			this.zX += (toWall - fDistance*Math.cos(this.fAngle));
-			this.fAngle = (-(this.fAngle + Math.PI))%(2*Math.PI);
-			console.log('x+');
 		}else{
-			this.zX += fDistance * Math.cos( this.fAngle );
+			this.zX += fDistance*Math.cos(this.fAngle);
 		}
 
-		if(this.zY + fDistance*Math.sin(this.fAngle) - SharedSettings.UNIT_HEIGHT * 0.5 < -SharedSettings.ZONE_HEIGHT * 0.5){
-			let toWall = -this.zY + SharedSettings.UNIT_HEIGHT*0.5 - SharedSettings.ZONE_HEIGHT*0.5;
-			this.zY += (toWall - fDistance*Math.sin(this.fAngle));
+		// y方向
+		if(Math.abs(this.zY + fDistance*Math.sin(this.fAngle))  > (SharedSettings.ZONE_HEIGHT - SharedSettings.UNIT_WIDTH)/2 &&
+			Math.abs(this.zY + Math.sign(Math.sin(this.fAngle))*SharedSettings.ZONE_HEIGHT*0.5) > (SharedSettings.ZONE_HEIGHT - SharedSettings.UNIT_WIDTH)/2){
+			
+			let toWall = SharedSettings.ZONE_HEIGHT*0.5 - Math.abs(this.zY) - SharedSettings.UNIT_WIDTH*0.5;
+			let rest = fDistance*Math.sin(this.fAngle) - toWall;
+			this.zY = (SharedSettings.ZONE_HEIGHT*0.5 - SharedSettings.UNIT_WIDTH*0.5 - rest)*Math.sign(Math.sin(this.fAngle));
 			this.fAngle *= -1;
-			console.log('y-');
-		}else if(this.zY + fDistance*Math.sin(this.fAngle) + SharedSettings.UNIT_HEIGHT * 0.5 > SharedSettings.ZONE_HEIGHT * 0.5){
-			let toWall = -this.zY - SharedSettings.UNIT_HEIGHT*0.5 + SharedSettings.ZONE_HEIGHT*0.5;
-			this.zY += (toWall - fDistance*Math.sin(this.fAngle));
-			this.fAngle *= -1;
-			console.log('y+');
 		}else{
-			this.zY += fDistance * Math.sin( this.fAngle );
+			this.zY += fDistance*Math.sin(this.fAngle);
 		}
-
 
 		this.fX = this.belongingZone.fX + this.zX;
 		this.fY = this.belongingZone.fY + this.zY;
