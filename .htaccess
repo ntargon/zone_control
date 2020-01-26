@@ -6,8 +6,8 @@ RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://ntargon.com/$1 [R=301,L]
 
 # wwwなし
-RewriteCond %{HTTP_HOST} ^www\.ntargon\.com
-RewriteRule ^(.*)$ https://ntargon.com/$1 [R=301,L]
+#RewriteCond %{HTTP_HOST} ^www\.ntargon\.com
+#RewriteRule ^(.*)$ https://ntargon.com/$1 [R=301,L]
 
 # インデックスファイルを表示しない
 #RewriteCond %{THE_REQUEST} ^.*/index.(html|htm|php)
