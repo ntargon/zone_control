@@ -1,3 +1,6 @@
+Options +FollowSymLinks
+RewriteEngine on
+
 # https強制
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://ntargon.com/$1 [R=301,L]
