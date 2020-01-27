@@ -4,5 +4,16 @@ RewriteEngine on
 # https強制
 # RewriteCond %{HTTPS} off
 RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+
+# wwwあり
+RewriteCond %{HTTP_HOST} ^ntargon\.com	
+RewriteCond %{HTTP_HOST} ^zone-control\.herokuapp\.com
+
 RewriteRule ^(.*)$ https://www.ntargon.com/$1 [R=301,L]
+
+# indexファイルを表示しない
+RewriteCond %{THE_REQUEST} ^.*/index.(html|htm|php)
+RewriteRule ^index.(html|htm|php)$ https://www.ntargon.com/$1 [R=301,L]
+
+
 
