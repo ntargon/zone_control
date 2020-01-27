@@ -15,8 +15,8 @@ RewriteRule ^(.*)$ https://www.ntargon.com/$1 [R=301,L]
 
 # indexファイルを表示しない
 RewriteCond %{THE_REQUEST} ^.*/index.(html|htm|php)
-# RewriteRule ^(.*)index.(html|htm|php)$ https://www.ntargon.com/$1 [R=301,L]
-RewriteRule ^(.*)index.html$ https://www.ntargon.com/$1 [R=301,L]
+RewriteRule ^(.*)index.(html|htm|php)$ https://www.ntargon.com/$1 [R=301,L]
+# RewriteRule ^(.*)index.html$ https://www.ntargon.com/$1 [R=301,L]
 
 
 
